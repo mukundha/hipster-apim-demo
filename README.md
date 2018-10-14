@@ -13,6 +13,7 @@ Set your Google Cloud Project ID
 
 ```
 export PROJECT_ID=<gcp-project-id>
+export ZONE=us-central1-a	
 ```
 
 Let's go
@@ -27,9 +28,10 @@ gcloud container clusters create ${CLUSTER_NAME} \
     --num-nodes 3 \
     --enable-autoscaling --min-nodes 1 --max-nodes 10 \
     --cluster-version=1.10.7-gke.6 \
+    --zone=${ZONE} \
     --no-enable-legacy-authorization
 
-gcloud container clusters get-credentials ${CLUSTER_NAME}
+gcloud container clusters get-credentials ${CLUSTER_NAME} --zone=${ZONE}
 
 kubectl create clusterrolebinding cluster-admin-binding \
   --clusterrole=cluster-admin \
@@ -54,7 +56,7 @@ kubectl apply -f istio-manifests
 ### Test
 
 ```
-export GATEWAY_URL=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export GATEWAY_URL=http://$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
 #Get List of Products
 curl $GATEWAY_URL/products
@@ -71,3 +73,7 @@ curl $GATEWAY_URL/currencies
 ```
 Explore the API endpoints in `endpoints/demo.http.swagger.json`
 
+### Deploy webapp using the APIs
+```
+envsubst < demo/hipster-web.yaml | kubectl apply -f -
+```
