@@ -1,14 +1,21 @@
 # Hipster API Demo
 
-## Install 
+## Install
 
-#### Tool Prerequisites
+_To resolve issues, please refer to *Toubleshooting* section below_
+
+### Tool Prerequisites
 
 `gcloud`
-`kubectl` 
-`envsusbt`
+`kubectl`
+`envsubst`
 
-#### Information Prerequisite
+##### 
+
+### APIs
+
+
+#### Information Prerequisites
 Set your Google Cloud Project ID
 
 ```
@@ -49,11 +56,20 @@ gcloud endpoints services deploy endpoints/api_descriptor.pb endpoints/api_confi
 
 envsubst < deploy-manifests/* | kubectl apply -f -
 
+# if the command above fails & returns *error: no objects passed to apply*), use this one:
+for f in $(find deploy-manifests -regex '.*\.ya*ml'); do envsubst < $f | kubectl apply -f -; done;
+
 kubectl apply -f istio-manifests
 
 ```
+### Web App (using the REST APIs above)
+```
+envsubst < demo/hipster-web.yaml | kubectl apply -f -
+```
 
-### Test
+## Test
+
+### APIs
 
 ```
 export GATEWAY_URL=http://$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
@@ -73,7 +89,26 @@ curl $GATEWAY_URL/currencies
 ```
 Explore the API endpoints in `endpoints/demo.http.swagger.json`
 
-### Deploy webapp using the APIs
+### Web App
+
+The following comamnd
 ```
-envsubst < demo/hipster-web.yaml | kubectl apply -f -
+export WEB_URL=http://$(kubectl -n default get service hipster-web-external -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+curl $WEB_URL
+
+#Or open the following URL in your browser:
+echo $WEB_URL
 ```
+
+## Troubleshooting
+
+### (MacOS) bash: envsubst: command not found
+
+`envsubst` is part of gettext. The quickest way [with brew](https://brew.sh/):
+- `brew install gettext` (if not already installed)
+- `brew link --force gettext` (if _symlink_ error, please see below)
+
+### (MacOS) Could not symlink bin/autopoint
+
+- ```sudo chown -R \`whoami`:admin /usr/local/share```
