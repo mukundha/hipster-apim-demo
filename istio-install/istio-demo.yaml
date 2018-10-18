@@ -730,7 +730,14 @@ data:
         - mountPath: /etc/certs/
           name: istio-certs
           readOnly: true
+        - mountPath: /gce
+          name: gce-disk  
       volumes:
+      - name: gce-disk
+        gcePersistentDisk:
+          pdName: istio-disk
+          readOnly: true
+          fsType: ext4
       - emptyDir:
           medium: Memory
         name: istio-envoy
