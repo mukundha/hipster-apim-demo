@@ -89,7 +89,7 @@ spec:
           number: 80    
   - match:
     - uri: 
-        prefix: "/shipping"
+        prefix: "/shipping/quote"
     route:
     - destination:
         host: shippingservice

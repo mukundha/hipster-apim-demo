@@ -21,21 +21,10 @@ spec:
     metadata:
       labels:
         app: paymentservice
+        transcode: http
     spec:
       terminationGracePeriodSeconds: 5
       containers:
-      - name: esp
-        image: gcr.io/endpoints-release/endpoints-runtime:1
-        args: [
-          "--http_port=8080",
-          "--http2_port=9000",
-          "--backend=grpc://127.0.0.1:50051",
-          "--service=${ENDPOINTS_SERVICE_URL}",
-          "--rollout_strategy=managed",
-        ]
-        ports:
-          - containerPort: 8080
-          - containerPort: 9000      
       - name: server
         image: gcr.io/microservices-demo-app/paymentservice
         ports:
@@ -64,11 +53,11 @@ spec:
     app: paymentservice
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 50051
     protocol: TCP
     name: http1
   - port: 443
-    targetPort: 9000
+    targetPort: 50051
     protocol: TCP
     name: grpc
 

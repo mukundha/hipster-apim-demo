@@ -7,6 +7,17 @@
 `gcloud`
 `kubectl` 
 `envsusbt`
+gcloud compute disks create --size=1GB --zone=us-central1-a istio-disk
+
+sudo lsblk
+
+sudo mkdir -p /mnt/disks/istio-disk
+
+sudo mount -o discard,defaults /dev/sdb /mnt/disks/istio-disk
+
+sudo chmod a+w /mnt/disks/istio-disk
+
+gcloud scp endpoints/api_descriptor.pb <instance>:/mnt/disks/istio-disk
 
 #### Information Prerequisite
 Set your Google Cloud Project ID
@@ -41,13 +52,7 @@ kubectl apply -f istio-install/istio-demo.yaml
 
 kubectl label namespace default istio-injection=enabled
 
-export ENDPOINTS_SERVICE_URL=hipstershop.endpoints.${PROJECT_ID}.cloud.goog
-
-envsubst < endpoints/api_config-tmp.yaml > endpoints/api_config.yaml
-
-gcloud endpoints services deploy endpoints/api_descriptor.pb endpoints/api_config.yaml
-
-envsubst < deploy-manifests/* | kubectl apply -f -
+kubectl apply -f deploy-manifests
 
 kubectl apply -f istio-manifests
 

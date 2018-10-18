@@ -21,31 +21,20 @@ spec:
     metadata:
       labels:
         app: shippingservice
+        transcode: http
     spec:
-      containers:
-      - name: esp
-        image: gcr.io/endpoints-release/endpoints-runtime:1
-        args: [
-          "--http_port=8080",
-          "--http2_port=9000",
-          "--backend=grpc://127.0.0.1:50051",
-          "--service=${ENDPOINTS_SERVICE_URL}",
-          "--rollout_strategy=managed",
-        ]
-        ports:
-          - containerPort: 8080
-          - containerPort: 9000        
+      containers:      
       - name: server
         image: gcr.io/microservices-demo-app/shippingservice
         ports:
         - containerPort: 50051
-        readinessProbe:
-          periodSeconds: 5
-          exec:
-            command: ["/bin/grpc_health_probe", "-addr=:50051"]
-        livenessProbe:
-          exec:
-            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+        # readinessProbe:
+        #   periodSeconds: 5
+        #   exec:
+        #     command: ["/bin/grpc_health_probe", "-addr=:50051"]
+        # livenessProbe:
+        #   exec:
+        #     command: ["/bin/grpc_health_probe", "-addr=:50051"]
         resources:
           requests:
             cpu: 100m
@@ -59,16 +48,16 @@ kind: Service
 metadata:
   name: shippingservice
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: shippingservice
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 50051
     protocol: TCP
     name: http1
   - port: 443
-    targetPort: 9000
+    targetPort: 50051
     protocol: TCP
     name: grpc
 ---

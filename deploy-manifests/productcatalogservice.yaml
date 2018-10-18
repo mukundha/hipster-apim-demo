@@ -22,21 +22,10 @@ spec:
     metadata:
       labels:
         app: productcatalogservice
+        transcode: http
     spec:
       terminationGracePeriodSeconds: 5
       containers:
-      - name: esp
-        image: gcr.io/endpoints-release/endpoints-runtime:1
-        args: [
-          "--http_port=8080",
-          "--http2_port=9000",
-          "--backend=grpc://127.0.0.1:3550",
-          "--service=${ENDPOINTS_SERVICE_URL}",
-          "--rollout_strategy=managed",
-        ]
-        ports:
-          - containerPort: 8080
-          - containerPort: 9000      
       - name: server
         image: gcr.io/microservices-demo-app/productcatalogservice
         ports:
@@ -65,11 +54,11 @@ spec:
     app: productcatalogservice
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 3550
     protocol: TCP
     name: http1
   - port: 443
-    targetPort: 9000
+    targetPort: 3550
     protocol: TCP
     name: grpc
 ---
