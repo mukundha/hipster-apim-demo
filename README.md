@@ -8,26 +8,6 @@
 `kubectl` 
 `envsusbt`
 
-Copy `api_descriptor.pb` to a GCE persistent disk  named `istio-disk`
-```
-gcloud compute disks create --size=1GB --zone=us-central1-a istio-disk
-
-```
-TODO: Move to a container / init-container
-```
-#Instructions for a GCE VM
-sudo lsblk
-
-sudo mkdir -p /mnt/disks/istio-disk
-
-sudo mount -o discard,defaults /dev/sdb /mnt/disks/istio-disk
-
-sudo chmod a+w /mnt/disks/istio-disk
-
-gcloud scp endpoints/api_descriptor.pb <instance>:/mnt/disks/istio-disk
-```
-
-
 #### Information Prerequisite
 Set your Google Cloud Project ID
 
@@ -53,6 +33,14 @@ gcloud container clusters create ${CLUSTER_NAME} \
 
 gcloud container clusters get-credentials ${CLUSTER_NAME} --zone=${ZONE}
 
+gcloud compute disks create --size=1GB --zone=us-central1-a istio-disk
+
+kubectl apply -f setup-persistent-disk.yaml
+
+##Wait for pod to complete
+
+kubectl delete -f setup-persistent-disk.yaml
+
 kubectl create clusterrolebinding cluster-admin-binding \
   --clusterrole=cluster-admin \
   --user="$(gcloud config get-value core/account)"
@@ -60,6 +48,8 @@ kubectl create clusterrolebinding cluster-admin-binding \
 kubectl apply -f istio-install/istio-demo.yaml
 
 kubectl label namespace default istio-injection=enabled
+
+kubectl apply -f filter.yaml
 
 kubectl apply -f deploy-manifests
 

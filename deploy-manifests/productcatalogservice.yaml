@@ -27,7 +27,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/microservices-demo-app/productcatalogservice
+        image: gcr.io/hipster-apim-demo/productcatalogservice
         ports:
         - containerPort: 3550
         readinessProbe:
