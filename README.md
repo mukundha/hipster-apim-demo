@@ -33,7 +33,7 @@ gcloud container clusters create ${CLUSTER_NAME} \
 
 gcloud container clusters get-credentials ${CLUSTER_NAME} --zone=${ZONE}
 
-gcloud compute disks create --size=1GB --zone=us-central1-a istio-disk
+gcloud compute disks create --size=1GB --zone=${ZONE} istio-disk
 
 kubectl apply -f setup-persistent-disk.yaml
 
