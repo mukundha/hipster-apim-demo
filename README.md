@@ -48,6 +48,9 @@ kubectl create clusterrolebinding cluster-admin-binding \
 
 kubectl apply -f istio-install/istio-demo.yaml
 
+#update the sidecar injector
+kubectl apply -f istio-install/istio-sidecar-injector.yaml
+
 kubectl label namespace default istio-injection=enabled
 
 kubectl apply -f filter.yaml
@@ -78,20 +81,18 @@ curl $GATEWAY_URL/currencies
 ```
 Explore the API endpoints in folder `endpoints/demo.http.swagger.json`
 
-### Deploy webapp using the APIs
-```
-envsubst < demo/hipster-web.yaml | kubectl apply -f -
-```
-
 ### Apigee Demo
 
 ```
 apigee-istio provision -o [organization] -e [environment] -u [username] -p [password] > istio-install/handler.yaml
+
 kubectl apply -f istio-install/definitions.yaml
-kubectl apply -f istio-install/apigee/handler.yaml
+kubectl apply -f istio-install/handler.yaml
 
 kubectl apply -f demo/rule.yaml
 
 #Get List of Products
 curl $GATEWAY_URL/products
+
+#The above will fail with HTTP 403
 ```
