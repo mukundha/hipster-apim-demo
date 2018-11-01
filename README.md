@@ -6,7 +6,7 @@
 
 `gcloud`
 `kubectl` 
-`envsusbt`
+`apigee-istio`
 
 #### Information Prerequisite
 Set your Google Cloud Project ID
@@ -37,7 +37,8 @@ gcloud compute disks create --size=1GB --zone=${ZONE} istio-disk
 
 kubectl apply -f setup-persistent-disk.yaml
 
-##Wait for pod to complete
+watch kubectl get job setup-persistent-disk
+#wait for the job to complete
 
 kubectl delete -f setup-persistent-disk.yaml
 
@@ -75,9 +76,22 @@ curl $GATEWAY_URL/recommendations/1
 curl $GATEWAY_URL/currencies
 
 ```
-Explore the API endpoints in `endpoints/demo.http.swagger.json`
+Explore the API endpoints in folder `endpoints/demo.http.swagger.json`
 
 ### Deploy webapp using the APIs
 ```
 envsubst < demo/hipster-web.yaml | kubectl apply -f -
+```
+
+### Apigee Demo
+
+```
+apigee-istio provision -o [organization] -e [environment] -u [username] -p [password] > istio-install/handler.yaml
+kubectl apply -f istio-install/definitions.yaml
+kubectl apply -f istio-install/apigee/handler.yaml
+
+kubectl apply -f demo/rule.yaml
+
+#Get List of Products
+curl $GATEWAY_URL/products
 ```
