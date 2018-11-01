@@ -48,7 +48,7 @@ kind: Service
 metadata:
   name: shippingservice
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: shippingservice
   ports:
