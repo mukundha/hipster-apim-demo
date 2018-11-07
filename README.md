@@ -27,7 +27,7 @@ gcloud container clusters create ${CLUSTER_NAME} \
     --machine-type=n1-standard-2 \
     --num-nodes 3 \
     --enable-autoscaling --min-nodes 1 --max-nodes 10 \
-    --cluster-version=1.10.7-gke.6 \
+    --cluster-version=1.11.2-gke.9 \
     --zone=${ZONE} \
     --no-enable-legacy-authorization
 
