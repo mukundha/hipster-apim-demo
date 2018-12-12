@@ -19,7 +19,7 @@ export ZONE=us-central1-a
 Let's go
 
 ```
-export CLUSTER_NAME=hipster-demo
+export CLUSTER_NAME=hipster-demo1
 
 gcloud config set project ${PROJECT_ID}
 
@@ -27,7 +27,7 @@ gcloud container clusters create ${CLUSTER_NAME} \
     --machine-type=n1-standard-2 \
     --num-nodes 3 \
     --enable-autoscaling --min-nodes 1 --max-nodes 10 \
-    --cluster-version=1.10.7-gke.6 \
+    --cluster-version=1.11.4 \
     --zone=${ZONE} \
     --no-enable-legacy-authorization
 
