@@ -24,8 +24,7 @@ spec:
     spec:
       containers:
         - name: server
-          # image: gcr.io/microservices-demo-app/frontend
-          image: gcr.io/chrispage-dev/microservices-demo-app_frontend:apigee-config
+          image: gcr.io/hipster-apim-demo/frontend
           ports:
           - containerPort: 8080
           readinessProbe:
