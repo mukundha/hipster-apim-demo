@@ -53,11 +53,11 @@ kubectl apply -f istio-install/istio-sidecar-injector.yaml
 
 kubectl label namespace default istio-injection=enabled
 
-kubectl apply -f filter.yaml
+kubectl apply -f istio-manifests
 
 kubectl apply -f deploy-manifests
 
-kubectl apply -f istio-manifests
+kubectl apply -f filter.yaml
 
 ```
 
