@@ -26,7 +26,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/microservices-demo-app/adservice
+        image: gcr.io/hipster-apim-demo/adservice:1.0.0
         ports:
         - containerPort: 9555
         env:
@@ -69,4 +69,4 @@ spec:
     name: grpc
 
 ---
-      
+

@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: server
-          image: gcr.io/hipster-apim-demo/checkoutservice
+          image: gcr.io/hipster-apim-demo/checkoutservice:1.0.0
           ports:
           - containerPort: 5050
           readinessProbe:

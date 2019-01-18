@@ -26,7 +26,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/microservices-demo-app/emailservice
+        image: gcr.io/hipster-apim-demo/emailservice:1.0.0
         ports:
         - containerPort: 8080
         readinessProbe:

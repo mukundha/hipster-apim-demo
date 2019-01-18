@@ -20,18 +20,18 @@ spec:
   template:
     metadata:
       labels:
-        app: currencyservice        
+        app: currencyservice
     spec:
-      terminationGracePeriodSeconds: 5      
+      terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/hipster-apim-demo/currencyservice
-        env: 
+        image: gcr.io/hipster-apim-demo/currencyservice:1.0.0
+        env:
         - name: DATA_URL
           value: "http://amer-demo4-test.apigee.net/currency-service"
         ports:
         - containerPort: 7000
-        - containerPort: 7080 
+        - containerPort: 7080
         readinessProbe:
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:7000"]

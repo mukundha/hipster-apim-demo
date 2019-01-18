@@ -26,7 +26,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/microservices-demo-app/cartservice
+        image: gcr.io/hipster-apim-demo/cartservice:1.0.0
         ports:
         - containerPort: 7070
         env:

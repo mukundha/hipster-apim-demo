@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: server
-          image: gcr.io/hipster-apim-demo/frontend
+          image: gcr.io/hipster-apim-demo/frontend:1.0.0
           ports:
           - containerPort: 8080
           readinessProbe:
