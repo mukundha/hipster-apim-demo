@@ -9,7 +9,8 @@ metadata:
   name: hipster-rule
   namespace: istio-system
 spec:
-  match: context.reporter.kind == "inbound" && destination.namespace == "default" && destination.labels["transcode"] == "http" 
+  match: context.reporter.kind == "inbound" && destination.namespace == "default" && destination.labels["transcode"] == "http"
+        && destination.service.name != "redis-cart"
   actions:
   - handler: apigee-handler.apigee.istio-system
     instances:
