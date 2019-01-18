@@ -15,7 +15,7 @@ data:
     template: |-
       initContainers:
       - name: istio-init
-        image: "gcr.io/istio-release/proxy_init:1.0.2"
+        image: "docker.io/istio/proxy_init:1.0.4"
         args:
         - "-p"
         - [[ .MeshConfig.ProxyListenPort ]]
@@ -52,7 +52,7 @@ data:
             add:
             - NET_ADMIN
           restartPolicy: Always
-      
+
       containers:
       - name: istio-proxy
         image: [[ if (isset .ObjectMeta.Annotations "sidecar.istio.io/proxyImage") -]]
@@ -136,7 +136,7 @@ data:
         [[ else -]]
           requests:
             cpu: 10m
-          
+
         [[ end -]]
         volumeMounts:
         - mountPath: /etc/istio/proxy
@@ -145,7 +145,7 @@ data:
           name: istio-certs
           readOnly: true
         - mountPath: /gce
-          name: gce-disk  
+          name: gce-disk
       volumes:
       - name: gce-disk
         gcePersistentDisk:
