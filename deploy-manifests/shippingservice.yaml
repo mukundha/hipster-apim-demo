@@ -23,9 +23,9 @@ spec:
         app: shippingservice
         transcode: http
     spec:
-      containers:      
+      containers:
       - name: server
-        image: gcr.io/microservices-demo-app/shippingservice
+        image: gcr.io/hipster-apim-demo/shippingservice:1.0.0
         ports:
         - containerPort: 50051
         # readinessProbe:
