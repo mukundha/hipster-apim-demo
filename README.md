@@ -14,25 +14,32 @@ Set your Google Cloud Project ID
 ```
 export PROJECT_ID=<gcp-project-id>
 export ZONE=us-central1-a	
+export CLUSTER_NAME=my-cluster
 ```
 
-Let's go
+##### Setup GKE
 
 ```
-export CLUSTER_NAME=hipster-demo1
-
 gcloud config set project ${PROJECT_ID}
 
 gcloud container clusters create ${CLUSTER_NAME} \
     --machine-type=n1-standard-2 \
     --num-nodes 3 \
     --enable-autoscaling --min-nodes 1 --max-nodes 10 \
-    --cluster-version=1.11.4 \
+    --cluster-version=1.13.5 \
     --zone=${ZONE} \
     --no-enable-legacy-authorization
 
 gcloud container clusters get-credentials ${CLUSTER_NAME} --zone=${ZONE}
 
+kubectl create clusterrolebinding cluster-admin-binding \
+  --clusterrole=cluster-admin \
+  --user="$(gcloud config get-value core/account)"
+
+```
+
+##### Prepare for Demo (Required only for this demo)
+```
 gcloud compute disks create --size=1GB --zone=${ZONE} istio-disk
 
 kubectl apply -f setup-persistent-disk.yaml
@@ -42,22 +49,33 @@ watch kubectl get job setup-persistent-disk
 
 kubectl delete -f setup-persistent-disk.yaml
 
-kubectl create clusterrolebinding cluster-admin-binding \
-  --clusterrole=cluster-admin \
-  --user="$(gcloud config get-value core/account)"
+```
 
-kubectl apply -f istio-install/istio-demo.yaml
+##### Install Istio
+```
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.1.7 sh -
 
-#update the sidecar injector
-kubectl apply -f istio-install/istio-sidecar-injector.yaml
+cd istio-1.1.7
+
+for i in install/kubernetes/helm/istio-init/files/crd*yaml; do kubectl apply -f $i; done
+
+kubectl apply -f install/kubernetes/istio-demo.yaml
+
+```
+
+#### Install Hispter
+```
+#update the sidecar injector to mount the gce disk created earlier to side car proxies
+kubectl apply -f demo/istio-sidecar-injector.yaml
 
 kubectl label namespace default istio-injection=enabled
 
+kubectl apply -f demo/istio-manifests.yaml
+
+kubectl apply -f demo/kubernetes-manifests.yaml
+
+#filter for grpc-transcoding
 kubectl apply -f filter.yaml
-
-kubectl apply -f deploy-manifests
-
-kubectl apply -f istio-manifests
 
 ```
 
@@ -82,6 +100,12 @@ curl $GATEWAY_URL/currencies
 Explore the API endpoints in folder `endpoints/demo.http.swagger.json`
 
 ### Apigee Demo
+
+```
+apigee-adapter/apigee-istio provision --grpc -o [org] -e [env] > samples/apigee/grpc/handler.yaml
+
+
+```
 
 ```
 apigee-istio provision -o [organization] -e [environment] -u [username] -p [password] > istio-install/handler.yaml

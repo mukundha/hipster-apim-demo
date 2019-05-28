@@ -1,0 +1,723 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "demo.http.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/ads": {
+      "get": {
+        "operationId": "GetAds",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopAdResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "context_keys",
+            "description": "List of important key words from the current page describing the context.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "AdService"
+        ]
+      }
+    },
+    "/carts": {
+      "post": {
+        "operationId": "AddItem",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/hipstershopAddItemRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CartService"
+        ]
+      }
+    },
+    "/carts/{user_id}": {
+      "get": {
+        "operationId": "GetCart",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopCart"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "CartService"
+        ]
+      },
+      "delete": {
+        "operationId": "EmptyCart",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "CartService"
+        ]
+      }
+    },
+    "/currencies": {
+      "get": {
+        "operationId": "GetSupportedCurrencies",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopGetSupportedCurrenciesResponse"
+            }
+          }
+        },
+        "tags": [
+          "CurrencyService"
+        ]
+      }
+    },
+    "/currencies/convert/{from.currency_code}/{to_code}": {
+      "get": {
+        "operationId": "Convert",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopMoney"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "from.currency_code",
+            "description": "The 3-letter currency code defined in ISO 4217.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "to_code",
+            "description": "The 3-letter currency code defined in ISO 4217.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "from.units",
+            "description": "The whole units of the amount.\nFor example if `currencyCode` is `\"USD\"`, then 1 unit is one US dollar.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "from.nanos",
+            "description": "Number of nano (10^-9) units of the amount.\nThe value must be between -999,999,999 and +999,999,999 inclusive.\nIf `units` is positive, `nanos` must be positive or zero.\nIf `units` is zero, `nanos` can be positive, zero, or negative.\nIf `units` is negative, `nanos` must be negative or zero.\nFor example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "CurrencyService"
+        ]
+      }
+    },
+    "/orders/checkout": {
+      "post": {
+        "operationId": "PlaceOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopPlaceOrderResponse"
+            }
+          }
+        },
+        "tags": [
+          "CheckoutService"
+        ]
+      }
+    },
+    "/payments": {
+      "post": {
+        "operationId": "Charge",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopChargeResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/hipstershopChargeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PaymentService"
+        ]
+      }
+    },
+    "/products": {
+      "get": {
+        "operationId": "ListProducts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopListProductsResponse"
+            }
+          }
+        },
+        "tags": [
+          "ProductCatalogService"
+        ]
+      },
+      "post": {
+        "operationId": "SearchProducts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopSearchProductsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/hipstershopSearchProductsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductCatalogService"
+        ]
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "operationId": "GetProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopProduct"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ProductCatalogService"
+        ]
+      }
+    },
+    "/recommendations/{user_id}": {
+      "get": {
+        "operationId": "ListRecommendations",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopListRecommendationsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "product_ids",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "RecommendationService"
+        ]
+      }
+    },
+    "/sendmail": {
+      "post": {
+        "operationId": "SendOrderConfirmation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/hipstershopSendOrderConfirmationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "EmailService"
+        ]
+      }
+    },
+    "/shipping": {
+      "post": {
+        "operationId": "ShipOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopShipOrderResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/hipstershopShipOrderRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ShippingService"
+        ]
+      }
+    },
+    "/shipping/quote": {
+      "post": {
+        "operationId": "GetQuote",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/hipstershopGetQuoteResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/hipstershopGetQuoteRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ShippingService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "hipstershopAd": {
+      "type": "object",
+      "properties": {
+        "redirect_url": {
+          "type": "string",
+          "description": "url to redirect to when an ad is clicked."
+        },
+        "text": {
+          "type": "string",
+          "description": "short advertisement text to display."
+        }
+      }
+    },
+    "hipstershopAdResponse": {
+      "type": "object",
+      "properties": {
+        "ads": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/hipstershopAd"
+          }
+        }
+      }
+    },
+    "hipstershopAddItemRequest": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string"
+        },
+        "item": {
+          "$ref": "#/definitions/hipstershopCartItem"
+        }
+      }
+    },
+    "hipstershopAddress": {
+      "type": "object",
+      "properties": {
+        "street_address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "zip_code": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "hipstershopCart": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/hipstershopCartItem"
+          }
+        }
+      }
+    },
+    "hipstershopCartItem": {
+      "type": "object",
+      "properties": {
+        "product_id": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "hipstershopChargeRequest": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "$ref": "#/definitions/hipstershopMoney"
+        },
+        "credit_card": {
+          "$ref": "#/definitions/hipstershopCreditCardInfo"
+        }
+      }
+    },
+    "hipstershopChargeResponse": {
+      "type": "object",
+      "properties": {
+        "transaction_id": {
+          "type": "string"
+        }
+      }
+    },
+    "hipstershopCreditCardInfo": {
+      "type": "object",
+      "properties": {
+        "credit_card_number": {
+          "type": "string"
+        },
+        "credit_card_cvv": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "credit_card_expiration_year": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "credit_card_expiration_month": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "hipstershopEmpty": {
+      "type": "object"
+    },
+    "hipstershopGetQuoteRequest": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/hipstershopAddress"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/hipstershopCartItem"
+          }
+        }
+      }
+    },
+    "hipstershopGetQuoteResponse": {
+      "type": "object",
+      "properties": {
+        "cost_usd": {
+          "$ref": "#/definitions/hipstershopMoney"
+        }
+      }
+    },
+    "hipstershopGetSupportedCurrenciesResponse": {
+      "type": "object",
+      "properties": {
+        "currency_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The 3-letter currency code defined in ISO 4217."
+        }
+      }
+    },
+    "hipstershopListProductsResponse": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/hipstershopProduct"
+          }
+        }
+      }
+    },
+    "hipstershopListRecommendationsResponse": {
+      "type": "object",
+      "properties": {
+        "product_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "hipstershopMoney": {
+      "type": "object",
+      "properties": {
+        "currency_code": {
+          "type": "string",
+          "description": "The 3-letter currency code defined in ISO 4217."
+        },
+        "units": {
+          "type": "string",
+          "format": "int64",
+          "description": "The whole units of the amount.\nFor example if `currencyCode` is `\"USD\"`, then 1 unit is one US dollar."
+        },
+        "nanos": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Number of nano (10^-9) units of the amount.\nThe value must be between -999,999,999 and +999,999,999 inclusive.\nIf `units` is positive, `nanos` must be positive or zero.\nIf `units` is zero, `nanos` can be positive, zero, or negative.\nIf `units` is negative, `nanos` must be negative or zero.\nFor example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000."
+        }
+      },
+      "description": "Represents an amount of money with its currency type."
+    },
+    "hipstershopOrderItem": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "$ref": "#/definitions/hipstershopCartItem"
+        },
+        "cost": {
+          "$ref": "#/definitions/hipstershopMoney"
+        }
+      }
+    },
+    "hipstershopOrderResult": {
+      "type": "object",
+      "properties": {
+        "order_id": {
+          "type": "string"
+        },
+        "shipping_tracking_id": {
+          "type": "string"
+        },
+        "shipping_cost": {
+          "$ref": "#/definitions/hipstershopMoney"
+        },
+        "shipping_address": {
+          "$ref": "#/definitions/hipstershopAddress"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/hipstershopOrderItem"
+          }
+        }
+      }
+    },
+    "hipstershopPlaceOrderResponse": {
+      "type": "object",
+      "properties": {
+        "order": {
+          "$ref": "#/definitions/hipstershopOrderResult"
+        }
+      }
+    },
+    "hipstershopProduct": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "picture": {
+          "type": "string"
+        },
+        "price_usd": {
+          "$ref": "#/definitions/hipstershopMoney"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Categories such as \"vintage\" or \"gardening\" that can be used to look up\nother related products."
+        }
+      }
+    },
+    "hipstershopSearchProductsRequest": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string"
+        }
+      }
+    },
+    "hipstershopSearchProductsResponse": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/hipstershopProduct"
+          }
+        }
+      }
+    },
+    "hipstershopSendOrderConfirmationRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "order": {
+          "$ref": "#/definitions/hipstershopOrderResult"
+        }
+      }
+    },
+    "hipstershopShipOrderRequest": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/hipstershopAddress"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/hipstershopCartItem"
+          }
+        }
+      }
+    },
+    "hipstershopShipOrderResponse": {
+      "type": "object",
+      "properties": {
+        "tracking_id": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,106 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: currency-transcode-filter  
+spec:
+  workloadLabels:
+    app: currencyservice    
+  filters:
+  - listenerMatch:  
+      portNumber: 7000          
+      listenerType: SIDECAR_INBOUND      
+    insertPosition:
+      index: BEFORE
+      relativeTo: envoy.router  
+    filterName: envoy.grpc_json_transcoder
+    filterType: HTTP
+    filterConfig:
+      proto_descriptor: "/gce/api_descriptor.pb"      
+      services: 
+        - hipstershop.CurrencyService
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: ads-transcode-filter  
+spec:
+  workloadLabels:
+    app: adservice    
+  filters:
+  - listenerMatch:  
+      portNumber: 9555          
+      listenerType: SIDECAR_INBOUND      
+    insertPosition:
+      index: BEFORE
+      relativeTo: envoy.router  
+    filterName: envoy.grpc_json_transcoder
+    filterType: HTTP
+    filterConfig:
+      proto_descriptor: "/gce/api_descriptor.pb"      
+      services: 
+        - hipstershop.AdService
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: products-transcode-filter  
+spec:
+  workloadLabels:
+    app: productcatalogservice    
+  filters:
+  - listenerMatch:  
+      portNumber: 3550          
+      listenerType: SIDECAR_INBOUND      
+    insertPosition:
+      index: BEFORE
+      relativeTo: envoy.router  
+    filterName: envoy.grpc_json_transcoder
+    filterType: HTTP
+    filterConfig:
+      proto_descriptor: "/gce/api_descriptor.pb"      
+      services: 
+        - hipstershop.ProductCatalogService
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: cart-transcode-filter  
+spec:
+  workloadLabels:
+    app: cartservice    
+  filters:
+  - listenerMatch:  
+      portNumber: 7070          
+      listenerType: SIDECAR_INBOUND      
+    insertPosition:
+      index: BEFORE
+      relativeTo: envoy.router  
+    filterName: envoy.grpc_json_transcoder
+    filterType: HTTP
+    filterConfig:
+      proto_descriptor: "/gce/api_descriptor.pb"      
+      services: 
+        - hipstershop.CartService
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: recommendation-transcode-filter  
+spec:
+  workloadLabels:
+    app: recommendationservice    
+  filters:
+  - listenerMatch:  
+      portNumber: 8080          
+      listenerType: SIDECAR_INBOUND      
+    insertPosition:
+      index: BEFORE
+      relativeTo: envoy.router  
+    filterName: envoy.grpc_json_transcoder
+    filterType: HTTP
+    filterConfig:
+      proto_descriptor: "/gce/api_descriptor.pb"      
+      services: 
+        - hipstershop.RecommendationService
+         
