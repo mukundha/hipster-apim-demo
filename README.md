@@ -129,15 +129,12 @@ wget https://github.com/apigee/istio-mixer-adapter/releases/download/1.1.3/istio
 
 tar -xvf istio-mixer-adapter_1.1.3_linux_64-bit.tar.gz
 
-cd apigee-adapter
-
 ./apigee-istio provision --grpc -o [org] -e [env] -u [username] -p [password] > samples/apigee/grpc/handler.yaml
 
 kubectl apply -f samples/apigee/grpc/apigee-adapter.yaml
 kubectl apply -f samples/apigee/grpc/definitions.yaml
 kubectl apply -f samples/apigee/grpc/handler.yaml
 
-cd ..
 ```
 
 #### Enable API Key based Authentication
@@ -199,15 +196,3 @@ kubectl apply -f demo/filter.yaml
 ### 2, API Key verification not working for Recommendations service
 This is a known issue, looks like path matching is failing, pls use other services for demo
 
-### 3, apigee-istio - cannot execute binary file: Exec format error
-Looks like apigee-istio can't be run on the cloud console, pls try the following instrcutions on your local machine and copy the handler.yaml to the cloud console
-
-```
-wget https://github.com/apigee/istio-mixer-adapter/releases/download/1.1.3/istio-mixer-adapter_1.1.3_<platform>-bit.tar.gz
-
-tar -xvf istio-mixer-adapter_1.1.3_<platform>-bit.tar.gz
-
-cd apigee-adapter
-
-./apigee-istio provision --grpc -o [org] -e [env] -u [username] -p [password] > samples/apigee/grpc/handler.yaml
-```
