@@ -151,3 +151,63 @@ curl $GATEWAY_URL/products
 ```
 
 Follow instructions [here](https://docs.apigee.com/api-platform/istio-adapter/install-istio_1_1#get_an_api_key) to get a valid API Key and access the APIs
+
+
+
+### KNOWN ISSUES
+
+### 1, Transcoding Not working
+When you invoke `curl $GATEWAY_URL/ads` or other URLs, you get a errors like
+- `GET without QUERY`
+- `unable to connect upstream`
+indicate the filter is not applied correctly or the disk volume containing the proto descriptor is not mounted correctly.
+
+##### Check Disk Volume mounted correctly
+Try this on one of the pods, ads or currency or products and make sure the `gce` folder exists
+```
+kubectl exec -it <pod-name> sh -c istio-proxy
+ls gce
+```
+If `gce` is not present, there could be a volume mount issue or sidecar injector not applied correctly
+
+##### Check Filter is applied correctly
+```
+kubectl port-forward <pod> 15000
+```
+Open localhost:15000 on your browser and searchh for grpc.transcoder, you should find filter configurations, if not filter is not configured correctly.
+
+For both the above cases, try the following
+```
+kubectl label namespace default istio-injection-
+
+kubectl apply -f demo/istio-sidecar-injector.yaml
+
+kubectl label namespace default istio-injection=enabled
+
+kubectl delete -f demo/kubernetes-manifests.yaml
+
+kubectl apply -f demo/kubernetes-manifests.yaml
+
+#wait for pods to be running , takes about a minute
+watch kubectl get pods
+
+#filter for grpc-transcoding
+kubectl apply -f demo/filter.yaml
+
+```
+
+### 2, API Key verification not working for Recommendations service
+This is a known issue, looks like path matching is failing, pls use other services for demo
+
+### 3, apigee-istio - cannot execute binary file: Exec format error
+Looks like apigee-istio can't be run on the cloud console, pls try the following instrcutions on your local machine and copy the handler.yaml to the cloud console
+
+```
+wget https://github.com/apigee/istio-mixer-adapter/releases/download/1.1.3/istio-mixer-adapter_1.1.3_<platform>-bit.tar.gz
+
+tar -xvf istio-mixer-adapter_1.1.3_<platform>-bit.tar.gz
+
+cd apigee-adapter
+
+./apigee-istio provision --grpc -o [org] -e [env] -u [username] -p [password] > samples/apigee/grpc/handler.yaml
+```
