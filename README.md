@@ -17,6 +17,15 @@ export ZONE=us-central1-a
 export CLUSTER_NAME=my-cluster
 ```
 
+#### Download the repo
+```
+git clone https://github.com/mukundha/hipster-apim-demo
+
+cd hipster-apim-demo
+
+git checkout istio-1-1
+```
+
 ##### Setup GKE
 
 ```
@@ -38,18 +47,6 @@ kubectl create clusterrolebinding cluster-admin-binding \
 
 ```
 
-##### Prepare for Demo (Required only for this demo)
-```
-gcloud compute disks create --size=1GB --zone=${ZONE} istio-disk
-
-kubectl apply -f setup-persistent-disk.yaml
-
-watch kubectl get job setup-persistent-disk
-#wait for the job to complete
-
-kubectl delete -f setup-persistent-disk.yaml
-
-```
 
 ##### Install Istio
 ```
@@ -61,21 +58,42 @@ for i in install/kubernetes/helm/istio-init/files/crd*yaml; do kubectl apply -f 
 
 kubectl apply -f install/kubernetes/istio-demo.yaml
 
+#wait for pods to be running / completed, takes about a minute or two
+watch kubectl get pods -n istio-system
+
+cd ..
+
 ```
 
-#### Install Hispter
+##### Prepare for Demo (Required only for this demo)
 ```
+gcloud compute disks create --size=1GB --zone=${ZONE} istio-disk
+
+kubectl apply -f demo/setup-persistent-disk.yaml
+
+watch kubectl get job setup-persistent-disk
+#wait for the job to complete
+
+kubectl delete -f setup-persistent-disk.yaml
+
 #update the sidecar injector to mount the gce disk created earlier to side car proxies
 kubectl apply -f demo/istio-sidecar-injector.yaml
 
 kubectl label namespace default istio-injection=enabled
 
+```
+
+#### Install Hispter
+```
 kubectl apply -f demo/istio-manifests.yaml
 
 kubectl apply -f demo/kubernetes-manifests.yaml
 
+#wait for pods to be running , takes about a minute
+watch kubectl get pods
+
 #filter for grpc-transcoding
-kubectl apply -f filter.yaml
+kubectl apply -f demo/filter.yaml
 
 ```
 
@@ -83,9 +101,6 @@ kubectl apply -f filter.yaml
 
 ```
 export GATEWAY_URL=http://$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-
-#Get List of Products
-curl $GATEWAY_URL/products
 
 #Get Ads
 curl $GATEWAY_URL/ads
@@ -96,70 +111,43 @@ curl $GATEWAY_URL/recommendations/1
 #Get Currencies
 curl $GATEWAY_URL/currencies
 
+#Get List of Products
+curl $GATEWAY_URL/products
+
 ```
-Explore the API endpoints in folder `endpoints/demo.http.swagger.json`
+Explore the API endpoints in folder `specs/demo.http.swagger.json`
+
 
 ### Apigee Demo
 
-```
-apigee-adapter/apigee-istio provision --grpc -o [org] -e [env] > samples/apigee/grpc/handler.yaml
-
+#### Install Apigee Adapter
 
 ```
+#This section assumes, you are running these steps from a Google Cloud shell, if you are running it on your own machine, make sure you download the correct binary for the apigee adapter depending on your OS
 
+wget https://github.com/apigee/istio-mixer-adapter/releases/download/1.1.3/istio-mixer-adapter_1.1.3_linux_64-bit.tar.gz
+
+tar -xvf istio-mixer-adapter_1.1.3_linux_64-bit.tar.gz
+
+cd apigee-adapter
+
+./apigee-istio provision --grpc -o [org] -e [env] -u [username] -p [password] > samples/apigee/grpc/handler.yaml
+
+kubectl apply -f samples/apigee/grpc/apigee-adapter.yaml
+kubectl apply -f samples/apigee/grpc/definitions.yaml
+kubectl apply -f samples/apigee/grpc/handler.yaml
+
+cd ..
 ```
-apigee-istio provision -o [organization] -e [environment] -u [username] -p [password] > istio-install/handler.yaml
 
-kubectl apply -f istio-install/definitions.yaml
-kubectl apply -f istio-install/handler.yaml
-
+#### Enable API Key based Authentication
+```
 kubectl apply -f demo/rule.yaml
 
-#Get List of Products
+#Get List of Products or other URLs to get ads, or currencies we used earlier
 curl $GATEWAY_URL/products
 
 #The above will fail with HTTP 403
 ```
 
-#### Hipster App client Apigee Demo
-
-```
-# Disable the Apigee Mixer plugin rule if enabled earlier
-kubectl delete -f demo/rule.yaml
-
-# Export FRONTEND_URL to navigate to Hipster App
-export FRONTEND_URL=http://$(kubectl get service frontend-external -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-```
-
-* Launch the FRONTEND_URL in a modern browser (Chrome/Safari/Firefox) and navigate around the Hipster Shop. For OSX `open $FRONTEND_URL` 
-  * _This will succeed without any errors_
-
-![alt text](images/hipster_app-landing.png)
-
-```
-#Re-apply the Apigee Mixer plugin rule to enforce authorization
-kubectl apply -f demo/rule.yaml
-```
-* Navigate around the Hipster Shop again in your browser. 
-  * _This will partially fail with HTTP 500 and HTTP 403 errors_
-
-![alt text](images/hipster_app-landing-unauthorized.png)
-
-* Generate a Developer and an API Product with the appropriate service names [example](https://docs.apigee.com/api-platform/istio-adapter/installation#get_an_api_key). You will need to add at least the following to the API Product Istio Services:
-```
-productcatalogservice.default.svc.cluster.local
-recommendationservice.default.svc.cluster.local
-currencyservice.default.svc.cluster.local
-cartservice.default.svc.cluster.local
-```
-
-* Create an Apigee application with the above API Product either in the Management UI or an Apigee developer portal [example](https://docs.apigee.com/api-platform/istio-adapter/installation#4_create_a_developer_app)
-
-* Copy the Apigee application Client ID above, add the Client ID to the Hipster App configuration, and click the **Save** button. `$FRONTEND_URL/config`
-
-![alt text](images/hipster_app-configuration.png)
-
-* Navigate around the Hipster Shop again in your browser!
-  * _This will succeed without any errors for the services you added to the API Product_
-
-![alt text](images/hipster_app-landing.png)
+Follow instructions [here](https://docs.apigee.com/api-platform/istio-adapter/install-istio_1_1#get_an_api_key) to get a valid API Key and access the APIs
