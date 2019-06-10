@@ -153,6 +153,49 @@ curl $GATEWAY_URL/products
 Follow instructions [here](https://docs.apigee.com/api-platform/istio-adapter/install-istio_1_1#get_an_api_key) to get a valid API Key and access the APIs
 
 
+#### Hipster App client Apigee Demo
+
+```
+# Disable the Apigee Mixer plugin rule if enabled earlier
+kubectl delete -f demo/rule.yaml
+
+# Export FRONTEND_URL to navigate to Hipster App
+export FRONTEND_URL=http://$(kubectl get service frontend-external -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+```
+
+* Launch the FRONTEND_URL in a modern browser (Chrome/Safari/Firefox) and navigate around the Hipster Shop. For OSX `open $FRONTEND_URL`
+  * _This will succeed without any errors_
+
+![alt text](images/hipster_app-landing.png)
+
+```
+#Re-apply the Apigee Mixer plugin rule to enforce authorization
+kubectl apply -f demo/rule.yaml
+```
+* Navigate around the Hipster Shop again in your browser.
+  * _This will partially fail with HTTP 500 and HTTP 403 errors_
+
+![alt text](images/hipster_app-landing-unauthorized.png)
+
+* Generate a Developer and an API Product with the appropriate service names [example](https://docs.apigee.com/api-platform/istio-adapter/installation#get_an_api_key). You will need to add at least the following to the API Product Istio Services:
+```
+productcatalogservice.default.svc.cluster.local
+recommendationservice.default.svc.cluster.local
+currencyservice.default.svc.cluster.local
+cartservice.default.svc.cluster.local
+```
+
+* Create an Apigee application with the above API Product either in the Management UI or an Apigee developer portal [example](https://docs.apigee.com/api-platform/istio-adapter/installation#4_create_a_developer_app)
+
+* Copy the Apigee application Client ID above, add the Client ID to the Hipster App configuration, and click the **Save** button. `$FRONTEND_URL/config`
+
+![alt text](images/hipster_app-configuration.png)
+
+* Navigate around the Hipster Shop again in your browser!
+  * _This will succeed without any errors for the services you added to the API Product_
+
+![alt text](images/hipster_app-landing.png)
+
 
 ### KNOWN ISSUES
 
