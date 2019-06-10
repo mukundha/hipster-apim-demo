@@ -1,11 +1,11 @@
 # Hipster API Demo
 
-## Install 
+## Install
 
 #### Tool Prerequisites
 
 `gcloud`
-`kubectl` 
+`kubectl`
 `apigee-istio`
 
 #### Information Prerequisite
@@ -13,7 +13,7 @@ Set your Google Cloud Project ID
 
 ```
 export PROJECT_ID=<gcp-project-id>
-export ZONE=us-central1-a	
+export ZONE=us-central1-a
 export CLUSTER_NAME=my-cluster
 ```
 
@@ -125,9 +125,11 @@ Explore the API endpoints in folder `specs/demo.http.swagger.json`
 ```
 #This section assumes, you are running these steps from a Google Cloud shell, if you are running it on your own machine, make sure you download the correct binary for the apigee adapter depending on your OS
 
-wget https://github.com/apigee/istio-mixer-adapter/releases/download/1.1.3/istio-mixer-adapter_1.1.3_linux_64-bit.tar.gz
-
-tar -xvf istio-mixer-adapter_1.1.3_linux_64-bit.tar.gz
+export APIGEE_ISTIO_DIR=istio-mixer-adapter;
+mkdir -p ${APIGEE_ISTIO_DIR};
+export APIGEE_ISTIO_DOWNLOAD_URL=https://github.com/apigee/istio-mixer-adapter/releases/download/1.1.3/istio-mixer-adapter_1.1.3_linux_64-bit.tar.gz;
+wget - ${APIGEE_ISTIO_DOWNLOAD_URL} -O - | tar -xz -C ${APIGEE_ISTIO_DIR};
+cd ${APIGEE_ISTIO_DIR};
 
 ./apigee-istio provision --grpc -o [org] -e [env] -u [username] -p [password] > samples/apigee/grpc/handler.yaml
 
@@ -135,6 +137,7 @@ kubectl apply -f samples/apigee/grpc/apigee-adapter.yaml
 kubectl apply -f samples/apigee/grpc/definitions.yaml
 kubectl apply -f samples/apigee/grpc/handler.yaml
 
+cd ..
 ```
 
 #### Enable API Key based Authentication
