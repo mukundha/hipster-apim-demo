@@ -19,11 +19,9 @@ export CLUSTER_NAME=my-cluster
 
 #### Download the repo
 ```
-git clone https://github.com/mukundha/hipster-apim-demo
+export HIPSTER_VERSION=1.1.0
 
-cd hipster-apim-demo
-
-git checkout istio-1-1
+mkdir -p hipster-apim-demo && cd hipster-apim-demo && curl -L https://github.com/mukundha/hipster-apim-demo/archive/$HIPSTER_VERSION.tar.gz | tar xvz --strip-components=1
 ```
 
 ##### Setup GKE
@@ -35,7 +33,7 @@ gcloud container clusters create ${CLUSTER_NAME} \
     --machine-type=n1-standard-2 \
     --num-nodes 3 \
     --enable-autoscaling --min-nodes 1 --max-nodes 10 \
-    --cluster-version=1.13.5 \
+    --cluster-version=1.13 \
     --zone=${ZONE} \
     --no-enable-legacy-authorization
 
@@ -74,7 +72,7 @@ kubectl apply -f demo/setup-persistent-disk.yaml
 watch kubectl get job setup-persistent-disk
 #wait for the job to complete
 
-kubectl delete -f setup-persistent-disk.yaml
+kubectl delete -f demo/setup-persistent-disk.yaml
 
 #update the sidecar injector to mount the gce disk created earlier to side car proxies
 kubectl apply -f demo/istio-sidecar-injector.yaml
@@ -126,10 +124,10 @@ Explore the API endpoints in folder `specs/demo.http.swagger.json`
 #This section assumes, you are running these steps from a Google Cloud shell, if you are running it on your own machine, make sure you download the correct binary for the apigee adapter depending on your OS
 
 export APIGEE_ISTIO_DIR=istio-mixer-adapter;
-mkdir -p ${APIGEE_ISTIO_DIR};
+
 export APIGEE_ISTIO_DOWNLOAD_URL=https://github.com/apigee/istio-mixer-adapter/releases/download/1.1.3/istio-mixer-adapter_1.1.3_linux_64-bit.tar.gz;
-wget - ${APIGEE_ISTIO_DOWNLOAD_URL} -O - | tar -xz -C ${APIGEE_ISTIO_DIR};
-cd ${APIGEE_ISTIO_DIR};
+
+mkdir -p $APIGEE_ISTIO_DIR && cd $APIGEE_ISTIO_DIR && curl -L $APIGEE_ISTIO_DOWNLOAD_URL | tar xvz
 
 ./apigee-istio provision --grpc -o [org] -e [env] -u [username] -p [password] > samples/apigee/grpc/handler.yaml
 
