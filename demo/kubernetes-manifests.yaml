@@ -28,11 +28,12 @@ spec:
     metadata:
       labels:
         app: emailservice
+        version: v1
     spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/hipster-apim-demo/emailservice:1.0.0
+        image: gcr.io/chrispage-dev/emailservice:v1.1.0-cloud-summit-dev
         ports:
         - containerPort: 8080
         env:
@@ -82,10 +83,11 @@ spec:
     metadata:
       labels:
         app: checkoutservice
+        version: v1
     spec:
       containers:
         - name: server
-          image: gcr.io/hipster-apim-demo/checkoutservice:1.0.0
+          image: gcr.io/chrispage-dev/checkoutservice:v1.1.0-cloud-summit-dev
           ports:
           - containerPort: 5050
           readinessProbe:
@@ -144,11 +146,12 @@ spec:
     metadata:
       labels:
         app: recommendationservice
+        version: v1
     spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/hipster-apim-demo/recommendationservice:1.0.0
+        image: gcr.io/chrispage-dev/recommendationservice:v1.1.0-cloud-summit-dev
         ports:
         - containerPort: 8080
         readinessProbe:
@@ -199,10 +202,11 @@ spec:
     metadata:
       labels:
         app: frontend
+        version: v1
     spec:
       containers:
         - name: server
-          image: gcr.io/hipster-apim-demo/frontend:1.0.0
+          image: gcr.io/chrispage-dev/frontend:v1.1.0-cloud-summit-dev
           ports:
           - containerPort: 8080
           readinessProbe:
@@ -286,11 +290,12 @@ spec:
     metadata:
       labels:
         app: paymentservice
+        version: v1
     spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/hipster-apim-demo/paymentservice:1.0.0
+        image: gcr.io/chrispage-dev/paymentservice:v1.1.0-cloud-summit-dev
         ports:
         - containerPort: 50051
         env:
@@ -335,11 +340,12 @@ spec:
     metadata:
       labels:
         app: productcatalogservice
+        version: v1
     spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/hipster-apim-demo/productcatalogservice:1.0.0
+        image: gcr.io/chrispage-dev/productcatalogservice:v1.1.0-cloud-summit-dev
         ports:
         - containerPort: 3550
         env:
@@ -387,11 +393,12 @@ spec:
     metadata:
       labels:
         app: cartservice
+        version: v1
     spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/hipster-apim-demo/cartservice:1.0.0
+        image: gcr.io/chrispage-dev/cartservice:v1.1.0-cloud-summit-dev
         ports:
         - containerPort: 7070
         env:
@@ -434,49 +441,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: loadgenerator
-spec:
-  selector:
-    matchLabels:
-      app: loadgenerator
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: loadgenerator
-    spec:
-      terminationGracePeriodSeconds: 5
-      restartPolicy: Always
-      initContainers:
-      - name: wait-frontend
-        image: alpine:3.6
-        command: ['sh', '-c', 'set -x;  apk add --no-cache curl &&
-          until timeout -t 2 curl -f "http://${FRONTEND_ADDR}"; do
-            echo "waiting for http://${FRONTEND_ADDR}";
-            sleep 2;
-          done;']
-        env:
-        - name: FRONTEND_ADDR
-          value: "frontend:80"
-      containers:
-      - name: main
-        image: gcr.io/hipster-apim-demo/loadgenerator:1.0.0
-        env:
-        - name: FRONTEND_ADDR
-          value: "frontend:80"
-        - name: USERS
-          value: "10"
-        resources:
-          requests:
-            cpu: 300m
-            memory: 256Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: currencyservice
 spec:
   selector:
@@ -486,11 +450,12 @@ spec:
     metadata:
       labels:
         app: currencyservice
+        version: v1
     spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/hipster-apim-demo/currencyservice:1.0.0
+        image: gcr.io/chrispage-dev/currencyservice:v1.1.0-cloud-summit-dev
         ports:
         - name: grpc
           containerPort: 7000
@@ -536,10 +501,11 @@ spec:
     metadata:
       labels:
         app: shippingservice
+        version: v1
     spec:
       containers:
       - name: server
-        image: gcr.io/hipster-apim-demo/shippingservice:1.0.0
+        image: gcr.io/chrispage-dev/shippingservice:v1.1.0-cloud-summit-dev
         ports:
         - containerPort: 50051
         env:
@@ -588,6 +554,7 @@ spec:
     metadata:
       labels:
         app: redis-cart
+        version: v1
     spec:
       containers:
       - name: redis
@@ -641,11 +608,12 @@ spec:
     metadata:
       labels:
         app: adservice
+        version: v1
     spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/hipster-apim-demo/adservice:1.0.0
+        image: gcr.io/chrispage-dev/adservice:v1.1.0-cloud-summit-dev
         ports:
         - containerPort: 9555
         env:
