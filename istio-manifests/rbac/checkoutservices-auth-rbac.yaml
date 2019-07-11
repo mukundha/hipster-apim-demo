@@ -1,0 +1,32 @@
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: ClusterRbacConfig
+metadata:
+  name: default
+spec:
+  mode: 'ON_WITH_INCLUSION'
+  inclusion:
+    services: ["checkoutservice", "emailservice", "paymentservice"]
+    #services: ["checkoutservice.default.svc.cluster.local", "emailservice.default.svc.cluster.local", "paymentservice.default.svc.cluster.local"]
+---
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: ServiceRole
+metadata:
+  name: checkoutservices-admin-access
+  namespace: default
+spec:
+  rules:
+    - services: ["*"]
+      methods: ["*"]
+---
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: ServiceRoleBinding
+metadata:
+  name: binding-checkoutservices-admin-access
+  namespace: default
+spec:
+  subjects:
+  - properties:
+      request.auth.claims[email]: "*@gmail.com"
+  roleRef:
+    kind: ServiceRole
+    name: "checkoutservices-admin-access"
