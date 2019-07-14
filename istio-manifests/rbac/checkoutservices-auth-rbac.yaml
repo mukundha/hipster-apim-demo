@@ -5,8 +5,7 @@ metadata:
 spec:
   mode: 'ON_WITH_INCLUSION'
   inclusion:
-    services: ["checkoutservice", "emailservice", "paymentservice"]
-    #services: ["checkoutservice.default.svc.cluster.local", "emailservice.default.svc.cluster.local", "paymentservice.default.svc.cluster.local"]
+    services: ["checkoutservice.default.svc.cluster.local", "emailservice.default.svc.cluster.local", "paymentservice.default.svc.cluster.local"]
 ---
 apiVersion: "rbac.istio.io/v1alpha1"
 kind: ServiceRole
