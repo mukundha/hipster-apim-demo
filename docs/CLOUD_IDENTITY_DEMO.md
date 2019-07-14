@@ -38,6 +38,14 @@ Verify everything was installed:
 
 		kubectl get meshpolicy,virtualservice,destinationrule,serviceentry
 
+Apply the Auth policy, service role, and service role binding to enforce RBAC on the checkout services:
+
+		kubectl apply -f istio-manifests/rbac/
+
+Verify everything was installed:
+
+		kubectl get policies,serviceroles,servicerolebinding
+
 
 ### <a name="install_hipster_app">Install Hipster App</a>
 Install the application:

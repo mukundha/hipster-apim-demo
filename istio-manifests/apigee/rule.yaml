@@ -12,8 +12,6 @@ spec:
   match: context.reporter.kind == "inbound" && destination.namespace == "default"
      && destination.labels["app"] != "frontend"
      && destination.labels["app"] != "redis-cart"
-  #&& destination.service.name != "frontend"
-  #match: context.reporter.kind == "inbound" && destination.namespace == "default" && destination.labels["app"] == "productcatalogservice"
   actions:
   - handler: apigee-handler
     instances:

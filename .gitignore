@@ -3,5 +3,5 @@ node_modules/
 tests
 apigee-adapter/samples/apigee/grpc/handler.yaml
 istio-*/
-handler.yaml
+handler*.yaml
 !istio-manifests/

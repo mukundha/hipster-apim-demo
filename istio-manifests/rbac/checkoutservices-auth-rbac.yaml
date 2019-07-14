@@ -26,7 +26,7 @@ metadata:
 spec:
   subjects:
   - properties:
-      request.auth.claims[email]: "*@gmail.com"
+      request.auth.claims[email]: "*@google.com"
   roleRef:
     kind: ServiceRole
     name: "checkoutservices-admin-access"
