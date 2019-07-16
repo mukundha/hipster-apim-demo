@@ -3,26 +3,45 @@ This documentation provides details for how to configure and setup GCP Apigee & 
 
 * [Prerequisites](#prereqs)
   * [Setup GKE](#setup_gke)
+  * [Setup Firebase](#setup_firebase)
   * [Install Istio](#install_istio)
   * [Install Hipster App](#install_hipster_app)
-* [Apigee Adpater](#apigee_adpater)
   * [Install Apigee Adapter](#install_apigee_adapter)
+* [Sample Demos](#sample_demos)
+  * [Demo Istio](#demo_istio)
+  * [Demo Apigee](#demo_apigee)
+  * [Demo GCIP](#demo_gcip)
+* [Clean Up](#clean_up)
+  * [Clean Up Demos](#clean_up_demos)
+  * [Clean Up GKE](#clean_cluster)
 
 
 ## <a name="prereqs">Prerequisites</a>
-These are the prerequisites for the Controller App Development
+These are the prerequisites for the Cloud Identity Demo
 
 
 ### <a name="setup_gke">Setup GKE</a>
 Run through all commands up to [Setup GKE](../README.md#setup-gke) for setting up the GKE environment and cluster.
 
 
+### <a name="setup_firebase">Setup Firebase</a>
+Login to Firebase [Console](https://console.firebase.google.com) and add a new project. Select your existing GCP project name and accept the TOS. Create a new web application and take note of the *Web Api Key*, *Auth Domain* and *Project ID* in the *Firebase SDK snippet*.
+
+
 ### <a name="install_istio">Install Istio</a>
 Run through all commands up to and including [Install Istio](../README.md#install-istio) for setting up the Istio environment and cluster. Do not apply the *install/kubernetes/istio-demo.yaml* installation though since it does not include mTLS. If you accidentally apply it, you can always apply the next command over it:
 
-Apply the Istio mTLS configuration instead of the default instance:
+Install Istio  and apply the mTLS configuration instead of the default instance:
+
+		curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.1.7 sh -
+
+		cd istio-1.1.7
+
+		for i in install/kubernetes/helm/istio-init/files/crd*yaml; do kubectl apply -f $i; done
 
 		kubectl apply -f install/kubernetes/istio-demo-auth.yaml
+
+		watch kubectl get pods -n istio-system
 
 		cd ..
 
@@ -30,21 +49,14 @@ Enable sidecar injection:
 
 		kubectl label namespace default istio-injection=enabled
 
-Apply the mTLS mesh policy, virtual servies, mTLS destination rules, frontend ingress gateway, and whitelist for external apis:
+Apply the virtual servies, destination rules, frontend ingress gateway, and whitelist for external apis:
 
 		kubectl apply -f istio-manifests/networking/
 
 Verify everything was installed:
+-_meshpolicy_ might be blank if mtls was not the default install
 
 		kubectl get meshpolicy,virtualservice,destinationrule,serviceentry
-
-Apply the Auth policy, service role, and service role binding to enforce RBAC on the checkout services:
-
-		kubectl apply -f istio-manifests/rbac/
-
-Verify everything was installed:
-
-		kubectl get policies,serviceroles,servicerolebinding
 
 
 ### <a name="install_hipster_app">Install Hipster App</a>
@@ -69,13 +81,69 @@ Run through the download commands for the [Install Apigee Adapter](../README.md#
 
 Apply all the Apigee Mixer configurations:
 
-		kubectl apply -f istio-manifests/apigee/apigee-adapter.yaml
-		kubectl apply -f istio-manifests/apigee/definitions.yaml
-		kubectl apply -f istio-manifests/apigee/handler.yaml
+		kubectl apply -f istio-manifests/apigee
+
+Verify the Apigee Mixer was installed:
+
+		kubectl get pods -n istio-system | grep apigee-adapter
+
+
+## <a name="sample_demos">Sample Demos</a>
+Below are the sample demo instructions to showcase the Istio, Apigee, and Cloud Idenitity with Hipster App.
+
+
+### <a name="demo_istio">Demo Istio</a>
+We need to setup the Istio mtls Mesh Policy globally for the default namespace. More details are [here](https://istio.io/docs/tasks/security/authn-policy/#globally-enabling-istio-mutual-tls)
+
+Apply the mTLS mesh policy and mTLS destination rules:
+
+		kubectl apply -f istio-manifests/networking/mtls
+
+Verify everything was installed:
+
+		kubectl get meshpolicy,virtualservice,destinationrule,serviceentry
+
+
+### <a name="demo_apigee">Demo Apigee</a>
+We need to setup the Apigee Istio Mixer adapter enforcement policies for AuthN/AuthZ. More details are [here](https://github.com/apigee/istio-mixer-adapter#configure-istio-for-the-apigee-adapter)
 
 Apply the Apigee mixer rule:
 
-		kubectl apply -f istio-manifests/apigee/rule.yaml
+		kubectl apply -f istio-manifests/apigee/rules
 
 You will now need a valid Application and API Key to connect to the Hipster App services
+
+
+### <a name="demo_gcip">Demo GCIP</a>
+Setup ure the up the Apigee Istio Mixer adapter enforcement policies for AuthN/AuthZ. More details are [here](https://github.com/apigee/istio-mixer-adapter#configure-istio-for-the-apigee-adapter)
+
+Apply the Auth policy, service role, and service role binding to enforce RBAC on the checkout services:
+
+		kubectl apply -f istio-manifests/rbac/
+
+Verify everything was installed:
+
+		kubectl get policies,serviceroles,servicerolebinding
+
+You will now need a valid JWT and google.com account to checkout anything from the Hipster App.
+
+
+## <a name="clean_up">Clean Up</a>
+Clean up the demos and cluster
+
+
+### <a name="clean_up_demos">Clean Up Demos</a>
+Clean up the RBAC, Apigee, mTLS configs:
+_Need to re-apply the networking destination rules_
+
+		kubectl delete -f istio-manifests/rbac
+		kubectl delete -f istio-manifests/apigee
+		kubectl delete -f istio-manifests/networking/mtls
+		kubectl apply -f istio-manifests/networking
+
+### <a name="clean_up_cluster">Clean Up Cluster</a>
+Clean up the cluster to a fresh state
+
+		kubectl delete -f kubernetes-manifests
+		kubectl delete -f istio-1.1.7/install/kubernetes/istio-demo-auth.yaml
 

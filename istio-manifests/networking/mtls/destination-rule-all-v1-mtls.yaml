@@ -7,7 +7,7 @@ spec:
   host: adservice
   trafficPolicy:
     tls:
-      mode: DISABLE
+      mode: ISTIO_MUTUAL
   subsets:
   - name: v1
     labels:
@@ -22,7 +22,7 @@ spec:
   host: cartservice
   trafficPolicy:
     tls:
-      mode: DISABLE
+      mode: ISTIO_MUTUAL
   subsets:
   - name: v1
     labels:
@@ -37,7 +37,7 @@ spec:
   host: checkoutservice
   trafficPolicy:
     tls:
-      mode: DISABLE
+      mode: ISTIO_MUTUAL
   subsets:
   - name: v1
     labels:
@@ -52,7 +52,7 @@ spec:
   host: currencyservice
   trafficPolicy:
     tls:
-      mode: DISABLE
+      mode: ISTIO_MUTUAL
   subsets:
   - name: v1
     labels:
@@ -67,7 +67,7 @@ spec:
   host: emailservice
   trafficPolicy:
     tls:
-      mode: DISABLE
+      mode: ISTIO_MUTUAL
   subsets:
   - name: v1
     labels:
@@ -82,7 +82,7 @@ spec:
   host: frontend
   trafficPolicy:
     tls:
-      mode: DISABLE
+      mode: SIMPLE
   subsets:
   - name: v1
     labels:
@@ -97,7 +97,7 @@ spec:
   host: paymentservice
   trafficPolicy:
     tls:
-      mode: DISABLE
+      mode: ISTIO_MUTUAL
   subsets:
   - name: v1
     labels:
@@ -112,7 +112,7 @@ spec:
   host: productcatalogservice
   trafficPolicy:
     tls:
-      mode: DISABLE
+      mode: ISTIO_MUTUAL
   subsets:
   - name: v1
     labels:
@@ -127,7 +127,7 @@ spec:
   host: recommendationservice
   trafficPolicy:
     tls:
-      mode: DISABLE
+      mode: ISTIO_MUTUAL
   subsets:
   - name: v1
     labels:
@@ -157,7 +157,7 @@ spec:
   host: shippingservice
   trafficPolicy:
     tls:
-      mode: DISABLE
+      mode: ISTIO_MUTUAL
   subsets:
   - name: v1
     labels:
