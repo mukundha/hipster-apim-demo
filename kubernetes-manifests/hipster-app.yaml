@@ -209,6 +209,7 @@ spec:
           image: gcr.io/chrispage-dev/frontend:v1.1.0-cloud-summit-dev
           ports:
           - containerPort: 8080
+          imagePullPolicy: Always
           readinessProbe:
             initialDelaySeconds: 10
             httpGet:

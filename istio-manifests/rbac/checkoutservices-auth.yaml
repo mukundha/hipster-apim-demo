@@ -1,0 +1,18 @@
+apiVersion: "authentication.istio.io/v1alpha1"
+kind: "Policy"
+metadata:
+  name: "checkoutservices-auth"
+spec:
+  targets:
+  - name: checkoutservice
+  - name: emailservice
+  - name: paymentservice
+  peers:
+    - mtls: {}
+    #mode: PERMISSIVE  unknown field "mode" in v1alpha1.PeerAuthenticationMethod
+  origins:
+  - jwt:
+      issuer: "https://securetoken.google.com/chrispage-cloud-summit"
+      jwksUri: "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com"
+  principalBinding: USE_ORIGIN
+
