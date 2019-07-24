@@ -1,5 +1,5 @@
-# Cloud Identity Demo
-This documentation provides details for how to configure and setup GCP Apigee & Cloud Identity Platform with the Hipster App.
+# Google Cloud Identity Platform Demo
+This documentation provides details for how to configure and setup GCP Apigee & Identity Platform with the Hipster App.
 
 * [Prerequisites](#prereqs)
   * [Setup GKE](#setup_gke)
@@ -17,7 +17,7 @@ This documentation provides details for how to configure and setup GCP Apigee & 
 
 
 ## <a name="prereqs">Prerequisites</a>
-These are the prerequisites for the Cloud Identity Demo
+These are the prerequisites for the Identity Platform Demo
 
 
 ### <a name="setup_gke">Setup GKE</a>
@@ -187,7 +187,7 @@ _This will partially fail with HTTP 500 and HTTP 401 errors_
 
 You will now need a valid JWT and google.com account to checkout anything from the Hipster App.
 
-Show the GCP CLoud Identity providers and Firebase confgi in the GCP [console](https://console.cloud.google.com) and Firebase [console](https://console.firebase.google.com)
+Show the GCP Identity providers and Firebase config in the GCP [console](https://console.cloud.google.com) and Firebase [console](https://console.firebase.google.com)
 
 Copy the Firebase apiKey, authDomain, projectID to the Hipster App configuration, add the redirect URL, *$FRONTEND_URL/login*, and click the **Save** button. `$FRONTEND_URL/config`
 
