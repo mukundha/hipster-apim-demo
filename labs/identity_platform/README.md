@@ -98,7 +98,7 @@ Export FRONTEND_URL to navigate to Hipster App
 Launch the FRONTEND_URL in a modern browser (Chrome/Safari/Firefox) and navigate around the Hipster Shop. For OSX `open $FRONTEND_URL`
 _This will succeed without any errors_
 
-![alt text](images/hipster_app-landing.png)
+![alt text](../../images/hipster_app-landing.png)
 
 
 ### <a name="demo_istio">Demo Istio</a>
@@ -135,7 +135,7 @@ Apply the Apigee mixer rule:
 Navigate around the Hipster Shop again in your browser.
 _This will partially fail with HTTP 500 and HTTP 403 errors_
 
-![alt text](images/hipster_app-landing-unauthorized.png)
+![alt text](../../images/hipster_app-landing-unauthorized.png)
 
 You will now need a valid Application and API Key to connect to the Hipster App services.
 
@@ -157,12 +157,12 @@ Create an Apigee application with the above API Product either in the Management
 
 Copy the Apigee application Client ID above, add the Client ID to the Hipster App configuration, and click the **Save** button. `$FRONTEND_URL/config`
 
-![alt text](images/hipster_app-configuration.png)
+![alt text](../../images/hipster_app-configuration.png)
 
 Navigate around the Hipster Shop again in your browser!
 _This will succeed without any errors for the services you added to the API Product_
 
-![alt text](images/hipster_app-landing.png)
+![alt text](../../images/hipster_app-landing.png)
 
 
 ### <a name="demo_gcip">Demo GCIP</a>
@@ -183,7 +183,7 @@ Verify everything was installed:
 Navigate around the Hipster Shop, add a product, and try to checkout!
 _This will partially fail with HTTP 500 and HTTP 401 errors_
 
-![alt text](images/hipster_app-checkout-unauthenticated.png)
+![alt text](../../images/hipster_app-checkout-unauthenticated.png)
 
 You will now need a valid JWT and google.com account to checkout anything from the Hipster App.
 
@@ -191,16 +191,16 @@ Show the GCP Identity providers and Firebase config in the GCP [console](https:/
 
 Copy the Firebase apiKey, authDomain, projectID to the Hipster App configuration, add the redirect URL, *$FRONTEND_URL/login*, and click the **Save** button. `$FRONTEND_URL/config`
 
-![alt text](images/hipster_app-configuration.png)
+![alt text](../../images/hipster_app-configuration.png)
 
 Click the **login** button on the Hipster Shop and login with valid Google credentials.
 
-![alt text](images/hipster_app-login.png)
+![alt text](../../images/hipster_app-login.png)
 
 Navigate around the Hipster Shop and try to checkout again in your browser!
 _This will succeed without any errors for the valid Google account_
 
-![alt text](images/hipster_app-checkout.png)
+![alt text](../../images/hipster_app-checkout.png)
 
 
 ## <a name="clean_up">Clean Up</a>
